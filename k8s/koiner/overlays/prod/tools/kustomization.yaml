@@ -1,0 +1,11 @@
+namespace: koiner-tools
+
+resources:
+  - namespace.yaml
+  - ../../../base/tools
+
+configMapGenerator:
+  - name: checker-config
+    behavior: create
+    envs:
+      - config/checker.properties

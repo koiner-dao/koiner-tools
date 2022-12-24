@@ -1,0 +1,50 @@
+{
+  "name": "koiner-tools",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "nx serve",
+    "build": "nx build",
+    "start:checker": "nx serve --project=checker",
+    "test": "nx test",
+    "build:checker": "nx build --project=checker"
+  },
+  "private": true,
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.2.0",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/platform-express": "^9.2.1",
+    "koilib": "^5.2.2",
+    "mathjs": "^11.1.0",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.0.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@nestjs/schematics": "^9.0.0",
+    "@nestjs/testing": "^9.0.0",
+    "@nrwl/cli": "14.1.9",
+    "@nrwl/eslint-plugin-nx": "14.1.9",
+    "@nrwl/jest": "14.1.9",
+    "@nrwl/js": "14.1.9",
+    "@nrwl/linter": "14.1.9",
+    "@nrwl/nest": "14.1.9",
+    "@nrwl/node": "14.1.9",
+    "@nrwl/nx-cloud": "14.0.5",
+    "@nrwl/workspace": "14.1.9",
+    "@types/cache-manager": "^4.0.2",
+    "@types/jest": "27.4.1",
+    "@types/node": "16.11.7",
+    "@typescript-eslint/eslint-plugin": "~5.18.0",
+    "@typescript-eslint/parser": "~5.18.0",
+    "eslint": "~8.12.0",
+    "eslint-config-prettier": "8.1.0",
+    "jest": "27.5.1",
+    "nx": "14.1.9",
+    "prettier": "^2.5.1",
+    "ts-jest": "27.1.4",
+    "ts-node": "^10.8.0",
+    "typescript": "~4.6.2"
+  }
+}

@@ -1,0 +1,10 @@
+# checker
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: checker.test.koiner.app
+- op: replace
+  path: /spec/tls/0/secretName
+  value: koiner-test-checker-tls
+- op: replace
+  path: /spec/rules/0/host
+  value: checker.test.koiner.app

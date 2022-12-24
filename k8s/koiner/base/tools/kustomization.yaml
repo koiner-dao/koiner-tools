@@ -1,0 +1,4 @@
+resources:
+  - koiner-checker-deployment.yaml
+  - koiner-checker-service.yaml
+  - ingress.yaml

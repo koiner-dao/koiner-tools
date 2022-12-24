@@ -1,0 +1,17 @@
+namespace: koiner-test-tools
+
+resources:
+  - namespace.yaml
+  - ../../../base/tools
+
+patches:
+  - target:
+      kind: Ingress
+      name: koiner-tools-ingress
+    path: ingress_patches.yaml
+
+configMapGenerator:
+  - name: checker-config
+    behavior: create
+    envs:
+      - config/checker.properties

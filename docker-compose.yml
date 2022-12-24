@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+
+  #
+  # Infrastructure
+  #
+
+  nginx-proxy:
+    container_name: koiner-nginx
+    image: nginxproxy/nginx-proxy:alpine
+    restart: on-failure
+    ports:
+      - '80:80'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - webproxy
+
+  #
+  # Tools
+  #
+
+  checker:
+    container_name: koiner-checker
+    image: koiner/checker
+    build:
+      context: .
+      dockerfile: 'apps/checker/Dockerfile'
+      target: development
+    profiles: ['koiner-tools', 'all']
+    command: npm run start:checker
+    env_file:
+      - 'apps/checker/.env'
+    volumes:
+      - ./data/checker/logs:/var/logs
+      - ./apps:/app/apps
+      - ./modules:/app/modules
+      - /app/node_modules
+    networks:
+      - webproxy
+    dns:
+      - 8.8.8.8
+    ports:
+      - '3201:3201'
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3201/health || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+
+networks:
+  webproxy:
+  default:
+
+volumes:
+  letsencrypt-certs:
