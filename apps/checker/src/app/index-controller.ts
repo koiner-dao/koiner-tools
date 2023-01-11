@@ -8,6 +8,7 @@ export class IndexController {
       tokenize: {
         balance: {
           koin: '/koin/balance/:addressId',
+          mana: '/mana/balance/:addressId',
           vhp: '/vhp/balance/:addressId',
           token: '/token/:id/balance/:addressId',
         },
