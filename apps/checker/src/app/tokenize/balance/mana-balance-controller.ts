@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, HostParam, Param, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ManaBalanceService } from '../service/mana-balance.service';
 
@@ -11,9 +11,24 @@ export class ManaBalanceController {
 
   @Get('balance/:addressId')
   async getBalance(@Param('addressId') addressId: string): Promise<number> {
-    return this.manaBalanceService.getBalance(
-      addressId,
-      8
-    );
+    return this.manaBalanceService.getBalance(addressId, 8);
+  }
+
+  @Get('balances')
+  async getBalances(
+    @Query('addressIds') addressIds: string[]
+  ): Promise<{ addressId: string; balance: number }[]> {
+    const balances = [];
+
+    for (const addressId of addressIds ?? []) {
+      const balance = await this.manaBalanceService.getBalance(addressId, 8);
+
+      balances.push({
+        addressId,
+        balance,
+      });
+    }
+
+    return balances;
   }
 }
