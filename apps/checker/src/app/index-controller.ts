@@ -6,6 +6,7 @@ export class IndexController {
   async getRoutes(): Promise<Record<string, any>> {
     return {
       chain: {
+        id: '/chain/id',
         height: '/chain/height',
       },
       tokenize: {

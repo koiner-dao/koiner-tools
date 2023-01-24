@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { KoilibModule } from './koilib.module';
 
+import { ChainService } from './chain/service/chain.service';
+import { ChainController } from './chain/balance/chain-controller';
+
 import { AddressBalanceService } from './tokenize/service/address-balance.service';
 import { ManaBalanceService } from './tokenize/service/mana-balance.service';
 import { TotalSupplyService } from './tokenize/service/total-supply.service';
@@ -26,8 +29,19 @@ import koinosConfig from './config/koinos.config';
     }),
     KoilibModule,
   ],
-  providers: [AddressBalanceService, ManaBalanceService, TotalSupplyService],
+  providers: [
+    // Chain
+    ChainService,
+
+    // Tokenize
+    AddressBalanceService,
+    ManaBalanceService,
+    TotalSupplyService,
+  ],
   controllers: [
+    // Chain
+    ChainController,
+
     // Balance checks
     KoinBalanceController,
     ManaBalanceController,

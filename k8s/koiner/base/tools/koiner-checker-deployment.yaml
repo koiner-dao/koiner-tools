@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: koiner-checker
-          image: elimbatido/koiner-checker:v0.1.4
+          image: elimbatido/koiner-checker:v0.1.5
           envFrom:
             - configMapRef:
                 name: checker-config
