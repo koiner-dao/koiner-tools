@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Contract, Provider, Signer, utils } from 'koilib';
-import { round } from 'mathjs';
+import { tokenAmount } from '../../utils';
 
 @Injectable()
 export class AddressBalanceService {
@@ -15,10 +15,6 @@ export class AddressBalanceService {
     decimals = 8
   ): Promise<number> {
     try {
-      const tokenAmount = (units: number, decimals: number): number => {
-        return round(units / Math.pow(10, decimals), decimals);
-      };
-
       const contract = new Contract({
         id: tokenContractId,
         abi: utils.tokenAbi,

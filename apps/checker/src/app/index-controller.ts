@@ -9,6 +9,11 @@ export class IndexController {
         id: '/chain/id',
         height: '/chain/height',
       },
+      network: {
+        blockProduction: {
+          stats: '/network/block-production/stats',
+        },
+      },
       tokenize: {
         balance: {
           koin: '/koin/balance/:addressId',
@@ -18,7 +23,9 @@ export class IndexController {
           token: '/token/:id/balance/:addressId',
         },
         'total-supply': {
+          koinOverview: '/koin/supplies',
           koin: '/koin/total-supply',
+          koinInflation: '/koin/inflation',
           vhp: '/vhp/total-supply',
           virtualSupply: '/koin/virtual-supply',
           token: '/token/:id/total-supply',

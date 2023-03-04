@@ -1,7 +1,11 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nrwl/nx", "eslint-plugin-prettier"],
+  "rules": {
+    "prettier/prettier": 2,
+    "curly": "error"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
