@@ -10,13 +10,13 @@ export class AddressBalanceService {
   ) {}
 
   async getBalance(
-    tokenContractId: string,
+    tokenId: string,
     address: string,
     decimals = 8
   ): Promise<number> {
     try {
       const contract = new Contract({
-        id: tokenContractId,
+        id: tokenId,
         abi: utils.tokenAbi,
         provider: this.provider,
         signer: this.signer,
@@ -30,14 +30,14 @@ export class AddressBalanceService {
   }
 
   async getBalances(
-    tokenContractId: string,
+    tokenId: string,
     addresses: string[],
     decimals = 8,
     useDecimals = true
   ): Promise<Record<string, number>> {
     try {
       const contract = new Contract({
-        id: tokenContractId,
+        id: tokenId,
         abi: utils.tokenAbi,
         provider: this.provider,
         signer: this.signer,
@@ -51,6 +51,48 @@ export class AddressBalanceService {
           .filter((address) => address !== '')
           .map(async (address) => {
             response[address] = await this.makeContractCall(
+              contract,
+              address,
+              decimals,
+              useDecimals
+            );
+          })
+      );
+
+      // Sort results
+      return Object.fromEntries(
+        Object.entries(response).sort(([keyA], [keyB]) =>
+          keyA.localeCompare(keyB)
+        )
+      );
+    } catch (error) {
+      console.error(error);
+      return {};
+    }
+  }
+
+  async getAddressBalances(
+    address: string,
+    tokenIds: string[],
+    decimals = 8,
+    useDecimals = true
+  ): Promise<Record<string, number>> {
+    try {
+      const response: Record<string, number> = {};
+
+      // Use Promise.all to wait for all async calls to complete
+      await Promise.all(
+        tokenIds
+          .filter((tokenId) => tokenId !== '')
+          .map(async (tokenId) => {
+            const contract = new Contract({
+              id: tokenId,
+              abi: utils.tokenAbi,
+              provider: this.provider,
+              signer: this.signer,
+            });
+
+            response[tokenId] = await this.makeContractCall(
               contract,
               address,
               decimals,

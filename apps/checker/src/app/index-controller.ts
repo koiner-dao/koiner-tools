@@ -22,6 +22,7 @@ export class IndexController {
           token: '/token/:id/balance/:address',
         },
         balances: {
+          address: '/address/:address/balances?tokenIds[]=',
           koin: '/koin/balances?addresses[]=',
           mana: '/mana/balances?addresses[]=',
           vhp: '/vhp/balances?addresses[]=',
