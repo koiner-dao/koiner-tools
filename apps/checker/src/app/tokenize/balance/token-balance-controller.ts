@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {Controller, Get, Param, Query} from '@nestjs/common';
 import { AddressBalanceService } from '../service/address-balance.service';
 
 @Controller('token')
@@ -11,5 +11,13 @@ export class TokenBalanceController {
     @Param('address') address: string
   ): Promise<number> {
     return this.addressBalanceService.getBalance(id, address);
+  }
+
+  @Get(':id/balances')
+  async getBalances(
+    @Param('id') id: string,
+    @Query('addresses') addresses: string[]
+  ): Promise<Record<string, number>> {
+    return this.addressBalanceService.getBalances(id, addresses);
   }
 }

@@ -18,9 +18,14 @@ export class IndexController {
         balance: {
           koin: '/koin/balance/:address',
           mana: '/mana/balance/:address',
-          manaBalances: '/mana/balances',
           vhp: '/vhp/balance/:address',
           token: '/token/:id/balance/:address',
+        },
+        balances: {
+          koin: '/koin/balances?addresses[]=',
+          mana: '/mana/balances?addresses[]=',
+          vhp: '/vhp/balances?addresses[]=',
+          token: '/token/:id/balances?addresses[]=',
         },
         'total-supply': {
           koinOverview: '/koin/supplies',

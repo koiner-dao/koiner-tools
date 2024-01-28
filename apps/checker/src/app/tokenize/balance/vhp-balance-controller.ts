@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {Controller, Get, Param, Query} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AddressBalanceService } from '../service/address-balance.service';
 
@@ -14,6 +14,17 @@ export class VhpBalanceController {
     return this.addressBalanceService.getBalance(
       this.configService.get<string>('koinos.contracts.vhp'),
       address,
+      8
+    );
+  }
+
+  @Get('balances')
+  async getBalances(
+    @Query('addresses') addresses: string[]
+  ): Promise<Record<string, number>> {
+    return this.addressBalanceService.getBalances(
+      this.configService.get<string>('koinos.contracts.vhp'),
+      addresses,
       8
     );
   }
