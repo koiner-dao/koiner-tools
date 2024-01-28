@@ -12,8 +12,11 @@ export class TokenTotalSupplyController {
 
   @Get('total-supplies')
   async getBalances(
-    @Query('ids') ids: string[]
+    @Query('ids') ids: string[],
+    @Query('useDecimals') useDecimals?: string
   ): Promise<Record<string, number>> {
-    return this.totalSupplyService.getTokenSupplies(ids);
+    const boolUseDecimals = useDecimals !== 'false';
+
+    return this.totalSupplyService.getTokenSupplies(ids, boolUseDecimals);
   }
 }
