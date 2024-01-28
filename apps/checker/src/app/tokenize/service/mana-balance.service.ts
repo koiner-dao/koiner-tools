@@ -6,9 +6,9 @@ import { tokenAmount } from '../../utils';
 export class ManaBalanceService {
   constructor(private readonly provider: Provider) {}
 
-  async getBalance(addressId: string, decimals = 8): Promise<number> {
+  async getBalance(address: string, decimals = 8): Promise<number> {
     try {
-      const rc = await this.provider.getAccountRc(addressId);
+      const rc = await this.provider.getAccountRc(address);
 
       if (!rc) {
         return -1;

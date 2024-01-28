@@ -5,11 +5,11 @@ import { AddressBalanceService } from '../service/address-balance.service';
 export class TokenBalanceController {
   constructor(private readonly addressBalanceService: AddressBalanceService) {}
 
-  @Get(':id/balance/:addressId')
+  @Get(':id/balance/:address')
   async getBalance(
     @Param('id') id: string,
-    @Param('addressId') addressId: string
+    @Param('address') address: string
   ): Promise<number> {
-    return this.addressBalanceService.getBalance(id, addressId);
+    return this.addressBalanceService.getBalance(id, address);
   }
 }

@@ -9,11 +9,11 @@ export class KoinBalanceController {
     private readonly addressBalanceService: AddressBalanceService
   ) {}
 
-  @Get('balance/:addressId')
-  async getBalance(@Param('addressId') addressId: string): Promise<number> {
+  @Get('balance/:address')
+  async getBalance(@Param('address') address: string): Promise<number> {
     return this.addressBalanceService.getBalance(
       this.configService.get<string>('koinos.contracts.koin'),
-      addressId,
+      address,
       8
     );
   }

@@ -11,7 +11,7 @@ export class AddressBalanceService {
 
   async getBalance(
     tokenContractId: string,
-    addressId: string,
+    address: string,
     decimals = 8
   ): Promise<number> {
     try {
@@ -23,7 +23,7 @@ export class AddressBalanceService {
       });
 
       const result = await contract.functions.balanceOf({
-        owner: addressId,
+        owner: address,
       });
 
       if (!decimals) {

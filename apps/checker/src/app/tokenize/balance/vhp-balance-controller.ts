@@ -9,11 +9,11 @@ export class VhpBalanceController {
     private readonly addressBalanceService: AddressBalanceService
   ) {}
 
-  @Get('balance/:addressId')
-  async getBalance(@Param('addressId') addressId: string): Promise<number> {
+  @Get('balance/:address')
+  async getBalance(@Param('address') address: string): Promise<number> {
     return this.addressBalanceService.getBalance(
       this.configService.get<string>('koinos.contracts.vhp'),
-      addressId,
+      address,
       8
     );
   }

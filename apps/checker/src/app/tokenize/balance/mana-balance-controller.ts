@@ -9,22 +9,22 @@ export class ManaBalanceController {
     private readonly manaBalanceService: ManaBalanceService
   ) {}
 
-  @Get('balance/:addressId')
-  async getBalance(@Param('addressId') addressId: string): Promise<number> {
-    return this.manaBalanceService.getBalance(addressId, 8);
+  @Get('balance/:address')
+  async getBalance(@Param('address') address: string): Promise<number> {
+    return this.manaBalanceService.getBalance(address, 8);
   }
 
   @Get('balances')
   async getBalances(
-    @Query('addressIds') addressIds: string[]
-  ): Promise<{ addressId: string; balance: number }[]> {
+    @Query('addresss') addresss: string[]
+  ): Promise<{ address: string; balance: number }[]> {
     const balances = [];
 
-    for (const addressId of addressIds ?? []) {
-      const balance = await this.manaBalanceService.getBalance(addressId, 8);
+    for (const address of addresss ?? []) {
+      const balance = await this.manaBalanceService.getBalance(address, 8);
 
       balances.push({
-        addressId,
+        address,
         balance,
       });
     }

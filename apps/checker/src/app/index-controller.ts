@@ -16,11 +16,11 @@ export class IndexController {
       },
       tokenize: {
         balance: {
-          koin: '/koin/balance/:addressId',
-          mana: '/mana/balance/:addressId',
+          koin: '/koin/balance/:address',
+          mana: '/mana/balance/:address',
           manaBalances: '/mana/balances',
-          vhp: '/vhp/balance/:addressId',
-          token: '/token/:id/balance/:addressId',
+          vhp: '/vhp/balance/:address',
+          token: '/token/:id/balance/:address',
         },
         'total-supply': {
           koinOverview: '/koin/supplies',
