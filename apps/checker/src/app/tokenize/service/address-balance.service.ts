@@ -89,7 +89,7 @@ export class AddressBalanceService {
         decimals = <number>decimalsResult.result.value;
       }
 
-      if (!result || !result.result.value) {
+      if (!result || !result.result?.value) {
         return -1;
       } else {
         return tokenAmount(<number>result.result.value, decimals);

@@ -35,6 +35,7 @@ export class IndexController {
           virtualSupply: '/koin/virtual-supply',
           token: '/token/:id/total-supply',
         },
+        'total-supplies': '/token/total-supplies',
       },
     };
   }

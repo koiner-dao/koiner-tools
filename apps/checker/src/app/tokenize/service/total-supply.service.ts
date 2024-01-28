@@ -10,6 +10,34 @@ export class TotalSupplyService {
   ) {}
 
   async getTokenSupply(id: string, decimals = 8): Promise<number> {
+    return this.makeContractCall(id, decimals);
+  }
+
+  async getTokenSupplies(ids: string[]): Promise<Record<string, number>> {
+    try {
+      const response: Record<string, number> = {};
+
+      // Use Promise.all to wait for all async calls to complete
+      await Promise.all(
+        ids
+          .filter((id) => id !== '')
+          .map(async (id) => {
+            response[id] = await this.makeContractCall(id);
+          })
+      );
+
+      // Sort results
+      return Object.fromEntries(
+        Object.entries(response).sort(([keyA], [keyB]) =>
+          keyA.localeCompare(keyB)
+        )
+      );
+    } catch (error) {
+      return {};
+    }
+  }
+
+  private async makeContractCall(id: string, decimals = 8): Promise<number> {
     try {
       const contract = new Contract({
         id,
@@ -30,13 +58,12 @@ export class TotalSupplyService {
         decimals = <number>decimalsResult.result.value;
       }
 
-      if (!result || !result.result.value) {
+      if (!result || !result.result?.value) {
         return -1;
       } else {
         return tokenAmount(<number>result.result.value, decimals);
       }
     } catch (error) {
-      console.error(error);
       return -1;
     }
   }
