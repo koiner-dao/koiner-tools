@@ -9,11 +9,18 @@ export class TotalSupplyService {
     private readonly signer: Signer
   ) {}
 
-  async getTokenSupply(id: string, decimals = 8): Promise<number> {
-    return this.makeContractCall(id, decimals);
+  async getTokenSupply(
+    id: string,
+    decimals = 8,
+    useDecimals = true
+  ): Promise<number> {
+    return this.makeContractCall(id, decimals, useDecimals);
   }
 
-  async getTokenSupplies(ids: string[]): Promise<Record<string, number>> {
+  async getTokenSupplies(
+    ids: string[],
+    useDecimals = true
+  ): Promise<Record<string, number>> {
     try {
       const response: Record<string, number> = {};
 
@@ -22,7 +29,11 @@ export class TotalSupplyService {
         ids
           .filter((id) => id !== '')
           .map(async (id) => {
-            response[id] = await this.makeContractCall(id);
+            response[id] = await this.makeContractCall(
+              id,
+              undefined,
+              useDecimals
+            );
           })
       );
 
@@ -37,7 +48,11 @@ export class TotalSupplyService {
     }
   }
 
-  private async makeContractCall(id: string, decimals = 8): Promise<number> {
+  private async makeContractCall(
+    id: string,
+    decimals = 8,
+    useDecimals = true
+  ): Promise<number> {
     try {
       const contract = new Contract({
         id,
@@ -48,7 +63,7 @@ export class TotalSupplyService {
 
       const result = await contract.functions.totalSupply();
 
-      if (!decimals && decimals !== 0) {
+      if (useDecimals && !decimals && decimals !== 0) {
         const decimalsResult = await contract.functions.decimals();
 
         if (!decimalsResult || !decimalsResult.result.value) {
@@ -61,7 +76,9 @@ export class TotalSupplyService {
       if (!result || !result.result?.value) {
         return -1;
       } else {
-        return tokenAmount(<number>result.result.value, decimals);
+        return useDecimals
+          ? tokenAmount(<number>result.result.value, decimals)
+          : Number(result.result.value);
       }
     } catch (error) {
       return -1;

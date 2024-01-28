@@ -1,5 +1,5 @@
 import { add, divide, multiply, round, subtract } from 'mathjs';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TotalSupplyService } from '../service/total-supply.service';
 import { tokenAmount } from '../../utils';
@@ -26,24 +26,29 @@ export class KoinTotalSupplyController {
   ) {}
 
   @Get('koin/total-supply')
-  async getKoinSupply(): Promise<number> {
+  async getKoinSupply(useDecimals = true): Promise<number> {
     return this.totalSupplyService.getTokenSupply(
       this.configService.get<string>('koinos.contracts.koin'),
-      8
+      8,
+      useDecimals
     );
   }
 
   @Get('vhp/total-supply')
-  async getVhpSupply(): Promise<number> {
+  async getVhpSupply(useDecimals = true): Promise<number> {
     return this.totalSupplyService.getTokenSupply(
       this.configService.get<string>('koinos.contracts.vhp'),
-      8
+      8,
+      useDecimals
     );
   }
 
   @Get('koin/virtual-supply')
-  async getVirtualSupply(): Promise<number> {
-    return (await this.getKoinSupply()) + (await this.getVhpSupply());
+  async getVirtualSupply(useDecimals = true): Promise<number> {
+    return (
+      (await this.getKoinSupply(useDecimals)) +
+      (await this.getVhpSupply(useDecimals))
+    );
   }
 
   @Get('koin/inflation')
@@ -55,12 +60,18 @@ export class KoinTotalSupplyController {
   }
 
   @Get('koin/supplies')
-  async getSuppliesByDecimal(): Promise<SuppliesResponse> {
-    const snapshot = tokenAmount(9973874402587864, 8);
-    const koin = await this.getKoinSupply();
-    const vhp = await this.getVhpSupply();
+  async getSuppliesByDecimal(
+    @Query('useDecimals') useDecimals?: string
+  ): Promise<SuppliesResponse> {
+    const boolUseDecimals = useDecimals !== 'false';
+
+    const snapshot = boolUseDecimals
+      ? tokenAmount(9973874402587864, 8)
+      : 9973874402587864;
+    const koin = await this.getKoinSupply(boolUseDecimals);
+    const vhp = await this.getVhpSupply(boolUseDecimals);
     const virtual = add(koin, vhp);
-    const inflation = await this.getInflation();
+    const inflation = await this.getInflation(boolUseDecimals);
     const fdv = add(snapshot, inflation);
     const burned = virtual && vhp ? multiply(divide(vhp, virtual), 100) : 0;
     const claimed = subtract(virtual, inflation);
@@ -71,38 +82,7 @@ export class KoinTotalSupplyController {
       vhp,
       virtual,
       inflation,
-      fdv,
-      burnedPercentage: round(burned, 2),
-      claimed,
-      claimedPercentage: round(claimedPercentage, 2),
-      snapshot,
-    };
-  }
-
-  @Get('koin/supplies-raw')
-  async getSuppliesRaw(): Promise<SuppliesResponse> {
-    const snapshot = 9973874402587864;
-    const koin = await this.totalSupplyService.getTokenSupply(
-      this.configService.get<string>('koinos.contracts.koin'),
-      0
-    );
-    const vhp = await this.totalSupplyService.getTokenSupply(
-      this.configService.get<string>('koinos.contracts.vhp'),
-      0
-    );
-    const virtual = add(koin, vhp);
-    const inflation = await this.getInflation(false);
-    const fdv = add(snapshot, inflation);
-    const burned = virtual && vhp ? multiply(divide(vhp, virtual), 100) : 0;
-    const claimed = subtract(virtual, inflation);
-    const claimedPercentage = divide(claimed, snapshot) * 100;
-
-    return {
-      koin,
-      vhp,
-      virtual,
-      inflation,
-      fdv,
+      fdv: useDecimals ? fdv : round(fdv, 0),
       burnedPercentage: round(burned, 2),
       claimed,
       claimedPercentage: round(claimedPercentage, 2),

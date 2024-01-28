@@ -17,7 +17,8 @@ export class ManaBalanceService {
 
   async getBalances(
     addresses: string[],
-    decimals = 8
+    decimals = 8,
+    useDecimals = true
   ): Promise<Record<string, number>> {
     try {
       const response: Record<string, number> = {};
@@ -27,7 +28,11 @@ export class ManaBalanceService {
         addresses
           .filter((address) => address !== '')
           .map(async (address) => {
-            response[address] = await this.makeContractCall(address, decimals);
+            response[address] = await this.makeContractCall(
+              address,
+              decimals,
+              useDecimals
+            );
           })
       );
 
@@ -45,7 +50,8 @@ export class ManaBalanceService {
 
   private async makeContractCall(
     address: string,
-    decimals = 8
+    decimals = 8,
+    useDecimals = true
   ): Promise<number> {
     try {
       const rc = await this.provider.getAccountRc(address);
@@ -53,7 +59,7 @@ export class ManaBalanceService {
       if (!rc) {
         return -1;
       } else {
-        return tokenAmount(parseInt(rc), decimals);
+        return useDecimals ? tokenAmount(parseInt(rc), decimals) : parseInt(rc);
       }
     } catch (error) {
       return -1;

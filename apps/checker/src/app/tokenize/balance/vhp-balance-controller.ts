@@ -20,24 +20,16 @@ export class VhpBalanceController {
 
   @Get('balances')
   async getBalances(
-    @Query('addresses') addresses: string[]
+    @Query('addresses') addresses: string[],
+    @Query('useDecimals') useDecimals?: string
   ): Promise<Record<string, number>> {
-    return this.addressBalanceService.getBalances(
-      this.configService.get<string>('koinos.contracts.vhp'),
-      addresses,
-      8
-    );
-  }
+    const boolUseDecimals = useDecimals !== 'false';
 
-  @Get('balances-raw')
-  async getBalancesRaw(
-    @Query('addresses') addresses: string[]
-  ): Promise<Record<string, number>> {
     return this.addressBalanceService.getBalances(
       this.configService.get<string>('koinos.contracts.vhp'),
       addresses,
       8,
-      false
+      boolUseDecimals
     );
   }
 }

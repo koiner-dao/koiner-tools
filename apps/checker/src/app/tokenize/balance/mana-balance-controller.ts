@@ -12,8 +12,11 @@ export class ManaBalanceController {
 
   @Get('balances')
   async getBalances(
-    @Query('addresses') addresses: string[]
+    @Query('addresses') addresses: string[],
+    @Query('useDecimals') useDecimals?: string
   ): Promise<Record<string, number>> {
-    return this.manaBalanceService.getBalances(addresses, 8);
+    const boolUseDecimals = useDecimals !== 'false';
+
+    return this.manaBalanceService.getBalances(addresses, 8, boolUseDecimals);
   }
 }
