@@ -32,7 +32,8 @@ export class AddressBalanceService {
   async getBalances(
     tokenContractId: string,
     addresses: string[],
-    decimals = 8
+    decimals = 8,
+    useDecimals = true
   ): Promise<Record<string, number>> {
     try {
       const contract = new Contract({
@@ -52,7 +53,8 @@ export class AddressBalanceService {
             response[address] = await this.makeContractCall(
               contract,
               address,
-              decimals
+              decimals,
+              useDecimals
             );
           })
       );
@@ -72,14 +74,15 @@ export class AddressBalanceService {
   private async makeContractCall(
     contract: Contract,
     address: string,
-    decimals = 8
+    decimals = 8,
+    useDecimals = true
   ): Promise<number> {
     try {
       const result = await contract.functions.balanceOf({
         owner: address,
       });
 
-      if (!decimals) {
+      if (useDecimals && !decimals) {
         const decimalsResult = await contract.functions.decimals();
 
         if (!decimalsResult || !decimalsResult.result.value) {
@@ -92,7 +95,9 @@ export class AddressBalanceService {
       if (!result || !result.result?.value) {
         return -1;
       } else {
-        return tokenAmount(<number>result.result.value, decimals);
+        return useDecimals
+          ? tokenAmount(<number>result.result.value, decimals)
+          : Number(result.result.value);
       }
     } catch (error) {
       return -1;

@@ -28,4 +28,16 @@ export class KoinBalanceController {
       8
     );
   }
+
+  @Get('balances-raw')
+  async getBalancesRaw(
+    @Query('addresses') addresses: string[]
+  ): Promise<Record<string, number>> {
+    return this.addressBalanceService.getBalances(
+      this.configService.get<string>('koinos.contracts.koin'),
+      addresses,
+      8,
+      false
+    );
+  }
 }
