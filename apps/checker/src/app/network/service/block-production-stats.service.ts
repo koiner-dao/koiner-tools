@@ -12,7 +12,7 @@ export class BlockProductionStatsService {
     private readonly configService: ConfigService
   ) {}
 
-  async getStats(): Promise<BlockProductionStats> {
+  async getStats(useDecimals = true): Promise<BlockProductionStats> {
     const apiUrl = this.configService.get<string>('koiner.network.apiUrl');
 
     const { data: blockProductionStats } = await firstValueFrom(
@@ -25,11 +25,17 @@ export class BlockProductionStatsService {
     );
 
     return {
-      rewarded: tokenAmount(blockProductionStats.rewarded, 8),
+      rewarded: useDecimals
+        ? tokenAmount(blockProductionStats.rewarded, 8)
+        : blockProductionStats.rewarded,
       producerCount: blockProductionStats.producerCount,
       blocksProduced: blockProductionStats.blocksProduced,
-      mintedTotal: tokenAmount(blockProductionStats.mintedTotal, 8),
-      burnedTotal: tokenAmount(blockProductionStats.burnedTotal, 8),
+      mintedTotal: useDecimals
+        ? tokenAmount(blockProductionStats.mintedTotal, 8)
+        : blockProductionStats.mintedTotal,
+      burnedTotal: useDecimals
+        ? tokenAmount(blockProductionStats.burnedTotal, 8)
+        : blockProductionStats.burnedTotal,
     };
   }
 }

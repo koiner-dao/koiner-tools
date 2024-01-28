@@ -48,7 +48,7 @@ export class TotalSupplyService {
 
       const result = await contract.functions.totalSupply();
 
-      if (!decimals) {
+      if (!decimals && decimals !== 0) {
         const decimalsResult = await contract.functions.decimals();
 
         if (!decimalsResult || !decimalsResult.result.value) {

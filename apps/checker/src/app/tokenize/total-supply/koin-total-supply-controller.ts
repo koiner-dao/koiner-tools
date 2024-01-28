@@ -47,9 +47,9 @@ export class KoinTotalSupplyController {
   }
 
   @Get('koin/inflation')
-  async getInflation(): Promise<number> {
+  async getInflation(useDecimals = true): Promise<number> {
     const blockProductionStats =
-      await this.blockProductionStatsService.getStats();
+      await this.blockProductionStatsService.getStats(useDecimals);
 
     return blockProductionStats ? blockProductionStats.rewarded : 0;
   }
@@ -61,6 +61,37 @@ export class KoinTotalSupplyController {
     const vhp = await this.getVhpSupply();
     const virtual = add(koin, vhp);
     const inflation = await this.getInflation();
+    const fdv = add(snapshot, inflation);
+    const burned = virtual && vhp ? multiply(divide(vhp, virtual), 100) : 0;
+    const claimed = subtract(virtual, inflation);
+    const claimedPercentage = divide(claimed, snapshot) * 100;
+
+    return {
+      koin,
+      vhp,
+      virtual,
+      inflation,
+      fdv,
+      burnedPercentage: round(burned, 2),
+      claimed,
+      claimedPercentage: round(claimedPercentage, 2),
+      snapshot,
+    };
+  }
+
+  @Get('koin/supplies-raw')
+  async getSuppliesRaw(): Promise<SuppliesResponse> {
+    const snapshot = 9973874402587864;
+    const koin = await this.totalSupplyService.getTokenSupply(
+      this.configService.get<string>('koinos.contracts.koin'),
+      0
+    );
+    const vhp = await this.totalSupplyService.getTokenSupply(
+      this.configService.get<string>('koinos.contracts.vhp'),
+      0
+    );
+    const virtual = add(koin, vhp);
+    const inflation = await this.getInflation(false);
     const fdv = add(snapshot, inflation);
     const burned = virtual && vhp ? multiply(divide(vhp, virtual), 100) : 0;
     const claimed = subtract(virtual, inflation);

@@ -29,6 +29,7 @@ export class IndexController {
         },
         'total-supply': {
           koinOverview: '/koin/supplies',
+          koinOverviewRaw: '/koin/supplies-raw',
           koin: '/koin/total-supply',
           koinInflation: '/koin/inflation',
           vhp: '/vhp/total-supply',
