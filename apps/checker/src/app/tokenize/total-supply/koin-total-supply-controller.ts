@@ -39,16 +39,15 @@ export class KoinTotalSupplyController {
   @Get('koin/total-supply')
   async getCirculatingSupply(
     @Req() req: Request,
-    @Query('useDecimals') useDecimals?: string,
-    @Query('format') format: string = 'text'
+    @Query('useDecimals') useDecimals?: string
   ): Promise<number | { supply: number }> {
     const boolUseDecimals = useDecimals !== 'false';
 
     const claimInfo = await this.claimService.getInfo();
 
     const snapshot = boolUseDecimals
-      ? tokenAmount(9973874402587865, 8)
-      : 9973874402587865;
+      ? tokenAmount(Number(claimInfo.totalKoin), 8)
+      : Number(claimInfo.totalKoin);
     const claimed = boolUseDecimals
       ? tokenAmount(Number(claimInfo.koinClaimed), 8)
       : Number(claimInfo.koinClaimed);
@@ -104,8 +103,8 @@ export class KoinTotalSupplyController {
     const claimInfo = await this.claimService.getInfo();
 
     const snapshot = boolUseDecimals
-      ? tokenAmount(9973874402587865, 8)
-      : 9973874402587865;
+      ? tokenAmount(Number(claimInfo.totalKoin), 8)
+      : Number(claimInfo.totalKoin);
     const koin = await this.getKoinSupply(boolUseDecimals);
     const claimed = boolUseDecimals
       ? tokenAmount(Number(claimInfo.koinClaimed), 8)
