@@ -28,6 +28,7 @@ export class IndexController {
           vhp: '/vhp/balances?addresses[]=',
           token: '/token/:id/balances?addresses[]=',
         },
+        claim: '/claim',
         'total-supply': {
           koinOverview: '/koin/supplies',
           koin: '/koin/total-supply',

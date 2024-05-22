@@ -9,5 +9,7 @@ export default registerAs('koinos', () => ({
     koin: process.env.KOIN_CONTRACT_ID ?? '15DJN4a8SgrbGhhGksSBASiSYjGnMU8dGL',
     vhp: process.env.VHP_CONTRACT_ID ?? '1AdzuXSpC6K9qtXdCBgD5NUpDNwHjMgrc9',
     pob: process.env.POB_CONTRACT_ID ?? '159myq5YUhhoVWu3wsHKHiJYKPKGUrGiyv',
+    claim:
+      process.env.CLAIM_CONTRACT_ID ?? '18zw3ZokdfHtudzaWAUnU4tUvKzKiJeN76',
   },
 }));
