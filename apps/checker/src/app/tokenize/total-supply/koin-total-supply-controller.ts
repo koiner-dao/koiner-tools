@@ -112,16 +112,14 @@ export class KoinTotalSupplyController {
     const unclaimed = subtract(snapshot, claimed);
     const vhp = await this.getVhpSupply(boolUseDecimals);
     const circulating = add(koin, unclaimed);
-    // const virtual = add(circulating, vhp);
-    const virtual = add(koin, vhp);
-    // const fdv = virtual;
-    const fdv = add(virtual, unclaimed);
+    const virtual = add(circulating, vhp);
+    const fdv = virtual;
     const inflation = subtract(fdv, snapshot);
     const burned = virtual && vhp ? multiply(divide(vhp, virtual), 100) : 0;
     const claimedPercentage = divide(claimed, snapshot) * 100;
 
     return {
-      koin, // : circulating,
+      koin: circulating,
       vhp,
       virtual,
       inflation,
