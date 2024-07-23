@@ -1,5 +1,5 @@
 import { add, divide, multiply, round, subtract } from 'mathjs';
-import { Controller, Get, Query, Req, Res } from '@nestjs/common';
+import { Controller, Get, Query, Req } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TotalSupplyService } from '../service/total-supply.service';
 import { tokenAmount } from '../../utils';
@@ -14,7 +14,7 @@ interface SuppliesResponse {
   fdv: number;
   burnedPercentage: number;
   claimed: number;
-  unclaimed: number;
+  outstanding: number;
   claimedPercentage: number;
   snapshot: number;
 }
@@ -51,7 +51,7 @@ export class KoinTotalSupplyController {
     const claimed = boolUseDecimals
       ? tokenAmount(Number(claimInfo.koinClaimed), 8)
       : Number(claimInfo.koinClaimed);
-    const unclaimed = subtract(snapshot, claimed);
+    const outstanding = subtract(snapshot, claimed);
 
     let koinSupply = await this.totalSupplyService.getTokenSupply(
       this.configService.get<string>('koinos.contracts.koin'),
@@ -59,7 +59,7 @@ export class KoinTotalSupplyController {
       boolUseDecimals
     );
 
-    koinSupply = add(koinSupply, unclaimed);
+    koinSupply = add(koinSupply, outstanding);
 
     const acceptHeader = req.headers['accept'];
 
@@ -81,10 +81,21 @@ export class KoinTotalSupplyController {
 
   @Get('koin/virtual-supply')
   async getVirtualSupply(useDecimals = true): Promise<number> {
-    return (
-      (await this.getKoinSupply(useDecimals)) +
-      (await this.getVhpSupply(useDecimals))
-    );
+    const claimInfo = await this.claimService.getInfo();
+
+    const snapshot = useDecimals
+      ? tokenAmount(Number(claimInfo.totalKoin), 8)
+      : Number(claimInfo.totalKoin);
+    const koin = await this.getKoinSupply(useDecimals);
+    const claimed = useDecimals
+      ? tokenAmount(Number(claimInfo.koinClaimed), 8)
+      : Number(claimInfo.koinClaimed);
+    const outstanding = subtract(snapshot, claimed);
+    const vhp = await this.getVhpSupply(useDecimals);
+    const circulating = add(koin, outstanding);
+    const virtual = add(circulating, vhp);
+
+    return virtual;
   }
 
   @Get('koin/inflation')
@@ -109,9 +120,9 @@ export class KoinTotalSupplyController {
     const claimed = boolUseDecimals
       ? tokenAmount(Number(claimInfo.koinClaimed), 8)
       : Number(claimInfo.koinClaimed);
-    const unclaimed = subtract(snapshot, claimed);
+    const outstanding = subtract(snapshot, claimed);
     const vhp = await this.getVhpSupply(boolUseDecimals);
-    const circulating = add(koin, unclaimed);
+    const circulating = add(koin, outstanding);
     const virtual = add(circulating, vhp);
     const fdv = virtual;
     const inflation = subtract(fdv, snapshot);
@@ -126,7 +137,7 @@ export class KoinTotalSupplyController {
       fdv: useDecimals ? fdv : round(fdv, 0),
       burnedPercentage: round(burned, 2),
       claimed,
-      unclaimed,
+      outstanding,
       claimedPercentage: round(claimedPercentage, 2),
       snapshot,
     };
