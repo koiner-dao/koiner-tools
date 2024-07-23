@@ -1,5 +1,5 @@
 #! Development image
-FROM node:lts-alpine as development
+FROM node:lts-alpine AS development
 RUN apk --no-cache add git
 
 WORKDIR /app
@@ -16,7 +16,7 @@ COPY ./workspace.json .
 RUN npm run build:checker
 
 #! Production image
-FROM node:lts-alpine as production
+FROM node:lts-alpine AS production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
