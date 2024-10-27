@@ -1,6 +1,7 @@
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 import { checkBlockTime } from './monitors';
+import { notify } from './notifications';
 
 dotenv.config();
 
@@ -16,4 +17,9 @@ cron.schedule(CHECK_INTERVAL, async () => {
   }
 });
 
-console.log('🚀 Koinos Node Monitor is running');
+const nodeName = process.env.NODE_NAME ?? 'Koinos Node';
+const message = `🚀 ${nodeName} Monitor is running`;
+
+notify(message).then();
+
+console.log(message);
