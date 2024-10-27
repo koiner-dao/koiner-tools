@@ -7,13 +7,13 @@ COPY package*.json ./
 
 RUN npm install
 
-COPY ./apps/ ./apps/
+COPY ./apps/checker ./apps/checker
 COPY ./modules/ ./modules/
 COPY ./nx.json .
 COPY ./tsconfig.base.json .
 COPY ./workspace.json .
 
-RUN npm run build:checker
+RUN npm run build checker --skip-nx-cache
 
 #! Production image
 FROM node:lts-alpine AS production
