@@ -52,9 +52,11 @@ export class HealthService {
       rewardTimestamp = latestReward.timestamp;
     }
 
+    const threshold = Date.now() - 360000; // 6 minutes
+
     return {
       chainSync: {
-        healthy: blockTimestamp && blockTimestamp < Date.now() - 60000,
+        healthy: blockTimestamp && blockTimestamp > threshold,
         timestamp: blockTimestamp,
         latestBlock: latestBlock ? latestBlock.header.height : null,
         latestDate: blockTimestamp
@@ -62,7 +64,7 @@ export class HealthService {
           : null,
       },
       networkSync: {
-        healthy: rewardTimestamp && rewardTimestamp < Date.now() - 60000,
+        healthy: rewardTimestamp && rewardTimestamp > threshold,
         timestamp: rewardTimestamp,
         latestBlock: latestBlock ? latestReward.height : null,
         latestDate: rewardTimestamp
