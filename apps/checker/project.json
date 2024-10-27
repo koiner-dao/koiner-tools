@@ -4,48 +4,45 @@
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/node:webpack",
+      "executor": "@nx/webpack:webpack",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
+        "target": "node",
+        "compiler": "tsc",
         "outputPath": "dist/apps/checker",
         "main": "apps/checker/src/main.ts",
         "tsConfig": "apps/checker/tsconfig.app.json",
-        "assets": ["apps/checker/src/assets"],
-        "poll": 1000
+        "webpackConfig": "apps/checker/webpack.config.js"
       },
       "configurations": {
-        "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/checker/src/environments/environment.ts",
-              "with": "apps/checker/src/environments/environment.prod.ts"
-            }
-          ]
-        }
+        "development": {},
+        "production": {}
       }
     },
     "serve": {
-      "executor": "@nrwl/node:node",
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "checker:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "checker:build:development"
+        },
+        "production": {
+          "buildTarget": "checker:build:production"
+        }
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/checker/**/*.ts"]
-      }
+      "executor": "@nx/eslint:lint"
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/checker"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "apps/checker/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "apps/checker/jest.config.ts"
       }
     }
   },

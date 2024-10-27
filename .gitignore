@@ -1,15 +1,12 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
-/tmp
+dist
+tmp
 /out-tsc
 
 # dependencies
 node_modules
-
-# Data
-/data/
 
 # IDEs and editors
 /.idea
@@ -41,11 +38,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# GraphQL-mesh
-.mesh
-
-# Cloud
-.digitalocean
-
-/**/env
-.env.secrets
+.nx/cache
+.nx/workspace-data
