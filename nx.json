@@ -36,6 +36,11 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "@nx/esbuild:esbuild": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "namedInputs": {
@@ -52,8 +57,7 @@
   "defaultProject": "checker",
   "workspaceLayout": {
     "appsDir": "apps",
-    "libsDir": "modules",
-    "projectNameAndRootFormat": "as-provided"
+    "libsDir": "modules"
   },
   "useDaemonProcess": false,
   "useInferencePlugins": false,
