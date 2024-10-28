@@ -5,7 +5,7 @@ let failedCheckCount = 0; // Counter for backoff
 let lastFailedCheck = null; // Timestamp of the last failed check
 
 export async function checkBlockTime(): Promise<void> {
-  const rpcNodes = process.env.RPC_NODE ?? 'https://localhost:8080';
+  const rpcNodes = process.env.JSONRPC_URL ?? 'http://jsonrpc:8080/';
   const provider = new Provider(rpcNodes);
   const headInfo = await provider.getHeadInfo();
 
