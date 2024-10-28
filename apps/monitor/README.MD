@@ -41,5 +41,9 @@ services:
     restart: always
     profiles: ["monitor", "all"]
     environment:
-       - JSONRPC_URL=http://jsonrpc:8080/
+      - JSONRPC_URL=http://jsonrpc:8080/
+    env_file:
+      - '.env'
+    depends_on:
+      - jsonrpc
 ```
