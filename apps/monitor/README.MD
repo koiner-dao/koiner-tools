@@ -1,4 +1,5 @@
 # Koiner Monitor
+The Koinos Node Monitor alerts you via Telegram and Discord whenever your node experiences downtime.
 
 ## Environment Variables
 Add these variables to the .env file in your project directory to configure the Koinos Node Monitor:
