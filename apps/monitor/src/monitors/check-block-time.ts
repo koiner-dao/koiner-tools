@@ -5,28 +5,35 @@ let failedCheckCount = 0; // Counter for backoff
 let lastFailedCheck = null; // Timestamp of the last failed check
 
 export async function checkBlockTime(): Promise<void> {
-  const rpcNodes = process.env.JSONRPC_URL ?? 'http://jsonrpc:8080/';
-  const provider = new Provider(rpcNodes);
-  const headInfo = await provider.getHeadInfo();
-
   const nodeName = process.env.NODE_NAME ?? 'Koinos Node';
+  const jsonRpcError = `🚨 Could not retrieve latest block from JSON RPC of ${nodeName}!`;
+
+  let headBlockTime = -1;
+  try {
+    const rpcNodes = process.env.JSONRPC_URL ?? 'http://jsonrpc:8080/';
+    const provider = new Provider(rpcNodes);
+    const headInfo = await provider.getHeadInfo();
+    headBlockTime = Number(headInfo.head_block_time);
+  } catch (error) {
+    console.error(error);
+  }
+
   const THRESHOLD_TIME = process.env.THRESHOLD_TIME
     ? Number(process.env.THRESHOLD_TIME)
     : 60000; // 1 minute in milliseconds
 
-  const headBlockTime = Number(headInfo.head_block_time);
   const currentTime = Date.now();
   const timeDifference = currentTime - headBlockTime;
   const timeDifferenceFormatted = formatTimeDifference(timeDifference);
 
   // Check if the headBlockTime is older than the threshold
-  if (timeDifference > THRESHOLD_TIME) {
+  if (headBlockTime === -1 || timeDifference > THRESHOLD_TIME) {
     const alertInterval = calculateAlertInterval(failedCheckCount);
 
     if (failedCheckCount === 0 || lastFailedCheck === null) {
       // First failure
       const message = `⚠️ ${nodeName} in trouble! Last block produced ${timeDifferenceFormatted} ago.`;
-      await notify(message);
+      await notify(headBlockTime === -1 ? jsonRpcError : message);
       failedCheckCount = 1;
       lastFailedCheck = Date.now();
     } else if (Date.now() - lastFailedCheck >= alertInterval) {
@@ -34,7 +41,7 @@ export async function checkBlockTime(): Promise<void> {
       const message = `${
         failedCheckCount > 3 ? '🚨' : '⚠️'
       } ${nodeName} still in trouble. Last block produced ${timeDifferenceFormatted} ago.`;
-      await notify(message);
+      await notify(headBlockTime === -1 ? jsonRpcError : message);
       failedCheckCount++; // Increase count only after an alert is sent
       lastFailedCheck = Date.now(); // Update lastFailedCheck after alert is sent
     }
